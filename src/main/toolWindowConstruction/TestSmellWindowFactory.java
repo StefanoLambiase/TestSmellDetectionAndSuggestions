@@ -24,12 +24,12 @@ public class TestSmellWindowFactory {
         principalPanel = new JPanel();
         principalPanel.setLayout(new GridLayout(3,1));
 
-        if(classesWithGF != null || !classesWithGF.isEmpty()){
+        if(classesWithGF != null){
             classesWithGeneralFixture = classesWithGF;
             generalFixturePanel = new JPanel(new GridLayout(classesWithGF.size(), 1));
             principalPanel.add(generalFixturePanel);
         }
-        if (classesWithET != null || !classesWithET.isEmpty()){
+        if (classesWithET != null){
             classesWithEagerTest = classesWithET;
             eagerTestPanel = new JPanel(new GridLayout(classesWithET.size(), 1));
             principalPanel.add(eagerTestPanel);
@@ -41,12 +41,12 @@ public class TestSmellWindowFactory {
      * @param tw la ToolWindow in cui inserire il contenuto
      */
     public void createToolWindow(ToolWindow tw){
-        if(classesWithGeneralFixture != null || !classesWithGeneralFixture.isEmpty()){
+        if(classesWithGeneralFixture != null){
             for(GeneralFixtureInfo gfi : classesWithGeneralFixture){
                 generalFixturePanel.add(new ClassWithGeneralFixturePanel(gfi));
             }
         }
-        if (classesWithEagerTest != null || !classesWithEagerTest.isEmpty()){
+        if (classesWithEagerTest != null){
             for(EagerTestInfo eti : classesWithEagerTest){
 
             }

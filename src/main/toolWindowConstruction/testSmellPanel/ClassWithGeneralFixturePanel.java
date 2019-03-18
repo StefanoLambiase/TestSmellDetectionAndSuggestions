@@ -28,7 +28,7 @@ public class ClassWithGeneralFixturePanel extends JPanel {
                     JFrame detailsFrame = new JFrame();
 
                     //Parte relativa alla creazione della scritta informativa
-                    String methodName = mb.getMethod().getName()+" non usa le seguenti variabili: ";
+                    String methodName = "   "+mb.getMethod().getName()+" non usa le seguenti variabili: ";
 
                     for(InstanceVariableBean instance : mb.getListOfInstances()){
                         methodName = new StringBuilder()
