@@ -1,0 +1,20 @@
+<idea-plugin>
+  <id>com.your.company.unique.plugin.id</id>
+  <name>Test Smell: detection and suggestions</name>
+  <version>1.0</version>
+  <vendor>Stefano Company</vendor>
+
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+
+  <extensions defaultExtensionNs="com.intellij">
+    <checkinHandlerFactory implementation="main.extension.CommitFactory"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
