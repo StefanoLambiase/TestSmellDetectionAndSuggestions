@@ -1,13 +1,11 @@
 package main.extension;
 
 import it.unisa.testSmellDiffusion.beans.ClassBean;
-import it.unisa.testSmellDiffusion.beans.InstanceVariableBean;
-import it.unisa.testSmellDiffusion.beans.MethodBean;
 import it.unisa.testSmellDiffusion.computation.TestSmellDetector;
-import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
-import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.MethodWithEagerTest;
-import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.*;
 
+import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
+import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import main.testSmellDetection.Detector;
 import main.toolWindowConstruction.TestSmellWindowFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.CheckinProjectPanel;
@@ -21,6 +19,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 
 public class CommitFactory  extends CheckinHandlerFactory{
@@ -29,10 +28,6 @@ public class CommitFactory  extends CheckinHandlerFactory{
     private CheckinProjectPanel myPanel;
     //ToolWindow da visualizzare
     private ToolWindow testWindow;
-
-    //Variabile usata per eseguire le analisi
-    //DA ELIMINARE
-    TestSmellDetector tsm;
 
 
     @NotNull
@@ -60,24 +55,70 @@ public class CommitFactory  extends CheckinHandlerFactory{
                 */
 
                 //Questa parte riguarda l'analisi degli Smells
-                tsm = new TestSmellDetector();
+                Detector tsd = new Detector();
 
-                executeDetectionForGeneralFixture();
-                executeDetectionForEagerTest();
+                //Mi salvo la lista di classi e di classi di test del progetto attivo
+                Vector<ClassBean> myClasses = tsd.getAllClassesInTheProject(myPanel.getProject().getBasePath());
+                ArrayList<ClassBean> myTestClasses = tsd.getAllTestClassesInTheProject(myPanel.getProject().getBasePath());
 
+                //Eseguo l'analisi
+                ArrayList<GeneralFixtureInfo> listGFI = tsd.executeDetectionForGeneralFixture(myTestClasses);
+                ArrayList<EagerTestInfo> listETI = tsd.executeDetectionForEagerTest(myTestClasses, myClasses);
 
-                //Chiamata finale
+                //Creo la ToolWindow
+                if(myTestClasses.isEmpty()){
+                    System.out.println("\nNon si e' committata alcuna classe di test");
+                } else {
+                    createToolWindow(listGFI, listETI);
+                    testWindow.show(null);
+                }
+
+                //Chiamata finale per completare il commit
                 return super.beforeCheckin();
             }
         };
         return checkinHandler;
     }
 
+    /**
+     * Metodo usato per la creazione della ToolWindow che mostrerà i dati delle classi di test
+     * @param listGFI
+     * @param listETI
+     */
+    private void createToolWindow(ArrayList<GeneralFixtureInfo> listGFI, ArrayList<EagerTestInfo> listETI){
+        Project activeProject = myPanel.getProject();
+
+        System.out.println("\nTOOL WINDOW: Inizio del processo per registrare la ToolWindow: TestWindow\n");
+        //Creo la ToolWindow
+        ToolWindowManager twm = ToolWindowManager.getInstance(activeProject);
+        System.out.println("Ho preso il ToolWindowManager");
+
+        //Questa parte serve a cancellare una eventuale ToolWindow precedentemente presente
+        ToolWindow toolWindow = ToolWindowManager.getInstance(activeProject).getToolWindow("TestWindow");
+        if(toolWindow != null){
+            twm.unregisterToolWindow("TestWindow");
+            System.out.println("Ho dovuto disattivare una precedente istanza della ToolWindow");
+        }
+
+        testWindow = twm.registerToolWindow("TestWindow", false, ToolWindowAnchor.BOTTOM);
+        testWindow.setTitle("TestWindow");
+        System.out.println("Ho registrato la ToolWindow");
+
+        //Instanzio la classe che si occupa della formattazione della ToolWindow
+        TestSmellWindowFactory testWindowFactory = new TestSmellWindowFactory(listGFI, listETI);
+        //Questo metodo si occupa di creare la formattazione interna della ToolWindow e anche di aggiungervela
+        testWindowFactory.createToolWindow(testWindow);
+
+        System.out.println("Ho completato le operazioni riguardanti la ToolWindow");
+    }
+
+
 
     /**
      * Questo metodo si occupa di trovare all'interno di tutte le classi nel commit quelle di test
      * @return un array contenente tutte le classe di test nel commit
      */
+    /*
     private ArrayList<VirtualFile> getTestClasses(){
         ArrayList<VirtualFile> testClassesFiles = new ArrayList<>();
         ArrayList<VirtualFile> allFiles = (ArrayList<VirtualFile>) myPanel.getVirtualFiles();
@@ -102,11 +143,13 @@ public class CommitFactory  extends CheckinHandlerFactory{
         }
         return testClassesFiles;
     }
+    */
 
     /**
      * Questo metodo si occupa di creare la ToolWindow che mostrerà i file di test individuati
      * @param testFiles la lista di file di test individuati
      */
+    /*
     private void createToolWindowWithFiles(ArrayList<VirtualFile> testFiles){
         Project activeProject = myPanel.getProject();
 
@@ -133,82 +176,6 @@ public class CommitFactory  extends CheckinHandlerFactory{
 
         System.out.println("Ho completato le operazioni riguardanti la ToolWindow");
     }
-
-
-
-    public void executeDetectionForGeneralFixture(){
-        ArrayList<ClassBean> myTestClasses = getAllTestClassesInTheProject();
-
-        //Parte relativa a GeneralFixture
-        System.out.println("\nDETECTOR: inizio a cercare per GENERAL FIXTURE: ");
-        ArrayList<GeneralFixtureInfo> classesWithGeneralFixture = tsm.checkGeneralFixture(myTestClasses);
-
-        //Parte relativa alla stampa dei dati ottenuti
-        for(GeneralFixtureInfo gfi : classesWithGeneralFixture){
-            String className = "\nNOME CLASSE: "+gfi.getTestClass().getName();
-
-            for(MethodWithGeneralFixture method : gfi.getMethodsThatCauseGeneralFixture()){
-                String methodName = "\nNome Metodo: "+method.getMethod().getName();
-
-                for(InstanceVariableBean instance : method.getListOfInstances()){
-                    methodName = new StringBuilder()
-                            .append(methodName)
-                            .append("\n   "+instance.getName())
-                            .toString();
-                }
-                className = new StringBuilder()
-                        .append(className)
-                        .append(methodName)
-                        .toString();
-            }
-            System.out.println(className);
-        }
-    }
-
-    public void executeDetectionForEagerTest(){
-        ArrayList<ClassBean> myTestClasses = getAllTestClassesInTheProject();
-
-        //Parte relativa a EagerTest
-        System.out.println("\nDETECTOR: inizio a cercare per EagerTest: ");
-        ArrayList<EagerTestInfo> classesWithEagerTest = tsm.checkEagerTest(myTestClasses);
-
-        //Parte relativa alla stampa dei dati ottenuti
-        for(EagerTestInfo eti : classesWithEagerTest){
-            String className = "\nNOME CLASSE: "+eti.getTestClass().getName();
-            String productionClassName = "\nNOME PRODUCTION CLASS: "+eti.getProductionClass().getName();
-
-            for(MethodWithEagerTest method : eti.getMethodsThatCauseEagerTest()){
-                String methodName = "\nNome Metodo: "+method.getMethod().getName()+"\n   Lista metodi chiamati:";
-
-                for(MethodBean mb : method.getListOfMethodsCalled()){
-                    methodName = new StringBuilder()
-                            .append(methodName)
-                            .append("\n   "+mb.getName())
-                            .toString();
-                }
-                className = new StringBuilder()
-                        .append(className)
-                        .append(productionClassName)
-                        .append(methodName)
-                        .toString();
-            }
-
-            System.out.println(className);
-        }
-    }
-
-    /**
-     * Metodo usato per trovare tutte le classi di test all'interno del progetto attivo
-     * @return la lista delle classi di test
-     */
-    public ArrayList<ClassBean> getAllTestClassesInTheProject(){
-        System.out.println("\nDETECTOR: sono il Detector, inizio a lavorare:\nEcco la path del progetto attivo: "+myPanel.getProject().getBasePath());
-        ArrayList<ClassBean> myTestClasses = tsm.getAllTestClass(myPanel.getProject().getBasePath());
-        System.out.println("\nEcco le classi trovate:");
-        for (ClassBean cb : myTestClasses){
-            System.out.println("\n"+cb.toString());
-        }
-        return myTestClasses;
-    }
+    */
 
 }
