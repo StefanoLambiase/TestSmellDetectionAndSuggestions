@@ -150,21 +150,17 @@ public class CommitFactory  extends CheckinHandlerFactory{
             for(MethodWithGeneralFixture method : gfi.getMethodsThatCauseGeneralFixture()){
                 String methodName = "\nNome Metodo: "+method.getMethod().getName();
 
-                System.out.println(method.getMethod().getName());
                 for(InstanceVariableBean instance : method.getListOfInstances()){
                     methodName = new StringBuilder()
                             .append(methodName)
                             .append("\n   "+instance.getName())
                             .toString();
-
-                    System.out.println(instance.getName());
                 }
                 className = new StringBuilder()
                         .append(className)
                         .append(methodName)
                         .toString();
             }
-
             System.out.println(className);
         }
     }
