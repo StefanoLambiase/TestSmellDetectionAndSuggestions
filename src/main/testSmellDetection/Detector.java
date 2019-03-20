@@ -37,8 +37,7 @@ public class Detector {
 
 
     public Vector<ClassBean> getAllClassesInTheProject(@NotNull String pFolderPath){
-        Vector<ClassBean> myClasses = tsm.getAllClasses(pFolderPath);
-        return myClasses;
+        return tsm.getAllClasses(pFolderPath);
     }
 
     public ArrayList<ClassBean> getAllTestClassesInTheProject(@NotNull String pFolderPath){

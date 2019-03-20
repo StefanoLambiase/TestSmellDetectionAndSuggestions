@@ -14,7 +14,10 @@
   </extensions>
 
   <actions>
-    <!-- Add your actions here -->
+    <group id="MyPlugin.SampleMenu" text="TestSmell detection" description="Sample menu">
+      <add-to-group group-id="MainMenu" anchor="last"  />
+      <action id="Myplugin.TextSmellDetection" class="main.action.TestSmellAction" text="Execute detection" description="A test menu item" />
+    </group>
   </actions>
 
 </idea-plugin>

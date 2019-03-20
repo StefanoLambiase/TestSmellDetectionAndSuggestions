@@ -1,7 +1,6 @@
 package main.extension;
 
 import it.unisa.testSmellDiffusion.beans.ClassBean;
-import it.unisa.testSmellDiffusion.computation.TestSmellDetector;
 
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
@@ -12,13 +11,13 @@ import com.intellij.openapi.vcs.CheckinProjectPanel;
 import com.intellij.openapi.vcs.changes.CommitContext;
 import com.intellij.openapi.vcs.checkin.CheckinHandler;
 import com.intellij.openapi.vcs.checkin.CheckinHandlerFactory;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Vector;
 
 
@@ -58,7 +57,7 @@ public class CommitFactory  extends CheckinHandlerFactory{
                 Detector tsd = new Detector();
 
                 //Mi salvo la lista di classi e di classi di test del progetto attivo
-                Vector<ClassBean> myClasses = tsd.getAllClassesInTheProject(myPanel.getProject().getBasePath());
+                Vector<ClassBean> myClasses = tsd.getAllClassesInTheProject(Objects.requireNonNull(myPanel.getProject().getBasePath()));
                 ArrayList<ClassBean> myTestClasses = tsd.getAllTestClassesInTheProject(myPanel.getProject().getBasePath());
 
                 //Eseguo l'analisi
@@ -82,8 +81,8 @@ public class CommitFactory  extends CheckinHandlerFactory{
 
     /**
      * Metodo usato per la creazione della ToolWindow che mostrerà i dati delle classi di test
-     * @param listGFI
-     * @param listETI
+     * @param listGFI lista di info su GeneralFixture
+     * @param listETI lista di info su EagerTest
      */
     private void createToolWindow(ArrayList<GeneralFixtureInfo> listGFI, ArrayList<EagerTestInfo> listETI){
         Project activeProject = myPanel.getProject();

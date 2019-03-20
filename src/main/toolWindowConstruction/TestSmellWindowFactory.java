@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class TestSmellWindowFactory {
     private JBScrollPane scroll;
-    private JPanel principalPanel;
     private JPanel generalFixturePanel;
     private JPanel eagerTestPanel;
 
@@ -25,7 +24,7 @@ public class TestSmellWindowFactory {
 
 
     public TestSmellWindowFactory(ArrayList<GeneralFixtureInfo> classesWithGF, ArrayList<EagerTestInfo> classesWithET){
-        principalPanel = new JPanel();
+        JPanel principalPanel = new JPanel();
         scroll = new JBScrollPane(principalPanel);
 
         principalPanel.setLayout(new GridLayout(3,1));
