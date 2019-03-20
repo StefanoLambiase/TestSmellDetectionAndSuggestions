@@ -51,7 +51,11 @@ public class Detector {
         return myTestClasses;
     }
 
-
+    /**
+     * Verifica la presenza di classi affette da GeneralFixture all'interno delle classi di test passate
+     * @param testClasses le classi di test da analizzare
+     * @return un array con le informazioni sulle classi affette da GeneralFixture
+     */
     public ArrayList<GeneralFixtureInfo> executeDetectionForGeneralFixture(@NotNull ArrayList<ClassBean> testClasses){
         //Parte relativa a GeneralFixture
         System.out.println("\nDETECTOR: inizio a cercare per GENERAL FIXTURE: ");
@@ -80,7 +84,12 @@ public class Detector {
         return classesWithGeneralFixture;
     }
 
-
+    /**
+     * Verifica la presenza di classi affette da EagerTest all'interno delle classi di test passate
+     * @param testClasses le classi di test da analizzare
+     * @param allClassesInTheProject tutte le classi presente nel progetto. Necessarie per trovare la production class
+     * @return un array con le informazioni sulle classi affette da EagerTest
+     */
     public ArrayList<EagerTestInfo> executeDetectionForEagerTest(@NotNull ArrayList<ClassBean> testClasses, @NotNull Vector<ClassBean> allClassesInTheProject){
         //Parte relativa a EagerTest
         System.out.println("\nDETECTOR: inizio a cercare per EagerTest: ");
