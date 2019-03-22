@@ -1,21 +1,19 @@
 package main.toolWindowConstruction;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
-import main.toolWindowConstruction.testSmellPanel.ClassWithEagerTestPanel;
-import main.toolWindowConstruction.testSmellPanel.ClassWithGeneralFixturePanel;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class TestSmellWindowFactory {
-    private JBScrollPane scroll;
     private JPanel generalFixturePanel;
     private JPanel eagerTestPanel;
 
@@ -23,34 +21,51 @@ public class TestSmellWindowFactory {
     private ArrayList<EagerTestInfo> classesWithEagerTest;
 
 
-    public TestSmellWindowFactory(ArrayList<GeneralFixtureInfo> classesWithGF, ArrayList<EagerTestInfo> classesWithET){
-        JPanel principalPanel = new JPanel();
-        scroll = new JBScrollPane(principalPanel);
+    public TestSmellWindowFactory(){
 
-        principalPanel.setLayout(new GridLayout(3,1));
+    }
 
-        if(classesWithGF != null){
-            classesWithGeneralFixture = classesWithGF;
-            TitledBorder border = new TitledBorder("GENERAL FIXTURE");
-            border.setTitleJustification(TitledBorder.CENTER);
-            border.setTitlePosition(TitledBorder.TOP);
 
-            generalFixturePanel = new JPanel(new GridLayout(1+classesWithGF.size(), 1));
-            generalFixturePanel.setBorder(border);
+    /**
+     * Questo metodo si occupa di registrare e mostrare la ToolWindow
+     * @param project il progetto attivo
+     * @param listGFI lista di info su GeneralFixture
+     * @param listETI lista di info su EagerTest
+     */
+    public void registerToolWindow(Project project, ArrayList<GeneralFixtureInfo> listGFI, ArrayList<EagerTestInfo> listETI) {
+        Project activeProject = project;
 
-            principalPanel.add(generalFixturePanel);
+        System.out.println("\nTOOL WINDOW: Inizio del processo per registrare la ToolWindow: TestWindow\n");
+        //Creo la ToolWindow
+        ToolWindowManager twm = ToolWindowManager.getInstance(activeProject);
+        System.out.println("Ho preso il ToolWindowManager");
+
+        //Questa parte serve a cancellare una eventuale ToolWindow precedentemente presente
+        ToolWindow toolWindow = ToolWindowManager.getInstance(activeProject).getToolWindow("TestWindow");
+        if (toolWindow != null) {
+            twm.unregisterToolWindow("TestWindow");
+            System.out.println("Ho dovuto disattivare una precedente istanza della ToolWindow");
         }
-        if (classesWithET != null){
-            classesWithEagerTest = classesWithET;
 
-            TitledBorder border = new TitledBorder("EAGER TEST");
-            border.setTitleJustification(TitledBorder.CENTER);
-            border.setTitlePosition(TitledBorder.TOP);
+        ToolWindow testWindow = twm.registerToolWindow("TestWindow", false, ToolWindowAnchor.BOTTOM);
+        testWindow.setTitle("TestWindow");
+        System.out.println("Ho registrato la ToolWindow");
 
-            eagerTestPanel = new JPanel(new GridLayout(1+classesWithET.size(), 1));
-            eagerTestPanel.setBorder(border);
+        //Inizio ad occuparmi della formattazione della ToolWindow
+        classesWithGeneralFixture = listGFI;
+        classesWithEagerTest = listETI;
 
-            principalPanel.add(eagerTestPanel);
+        if (listGFI != null) {
+            generalFixturePanel = new GeneralFixturePanel(listGFI);
+        }
+        if (listETI != null) {
+            eagerTestPanel = new EagerTestPanel(listETI);
+
+            //Questo metodo si occupa di creare la formattazione interna della ToolWindow e anche di aggiungervela
+            createToolWindow(testWindow);
+            testWindow.show(null);
+
+            System.out.println("Ho completato le operazioni riguardanti la ToolWindow");
         }
     }
 
@@ -59,34 +74,21 @@ public class TestSmellWindowFactory {
      * @param tw la ToolWindow in cui inserire il contenuto
      */
     public void createToolWindow(ToolWindow tw){
-        //In questa parte costruisco i JPanel contenenti le info sui TestSmells
-        if(classesWithGeneralFixture != null){
-            JPanel topPanel = new JPanel(new GridLayout(1,2));
-            topPanel.add(new JLabel("NOME CLASSE"));
-            topPanel.add(new JLabel("DETTAGLI METODI"));
-            generalFixturePanel.add(topPanel);
+        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 
-            for(GeneralFixtureInfo gfi : classesWithGeneralFixture){
-                generalFixturePanel.add(new ClassWithGeneralFixturePanel(gfi));
-            }
+        //In questa parte costruisco i Content da mettere nella ToolWindow
+        if(classesWithGeneralFixture != null){
+            JBScrollPane scroll = new JBScrollPane(generalFixturePanel);
+            Content contentGeneralFixture = contentFactory.createContent(scroll, "GeneralFixture", true);
+            tw.getContentManager().addContent(contentGeneralFixture);
         }
         if (classesWithEagerTest != null){
-            JPanel topPanel = new JPanel(new GridLayout(1,3));
-            topPanel.add(new JLabel("NOME CLASSE"));
-            topPanel.add(new JLabel("NOME PRODUCTION CLASS"));
-            topPanel.add(new JLabel("DETTAGLI METODI"));
-            eagerTestPanel.add(topPanel);
-
-            for(EagerTestInfo eti : classesWithEagerTest){
-                eagerTestPanel.add(new ClassWithEagerTestPanel(eti));
-            }
+            JBScrollPane scroll = new JBScrollPane(eagerTestPanel);
+            Content contentEagerTest = contentFactory.createContent(scroll, "EagerTest", true);
+            tw.getContentManager().addContent(contentEagerTest);
         }
-
-        //Parte relativa all'aggiunta del Component alla ToolWindow
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(scroll, "", true);
-        tw.getContentManager().addContent(content);
     }
+
 
 
 }
