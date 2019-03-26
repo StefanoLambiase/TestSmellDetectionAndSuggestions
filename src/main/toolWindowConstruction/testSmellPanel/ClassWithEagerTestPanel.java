@@ -5,6 +5,7 @@ import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.MethodWithEagerTest;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,9 @@ public class ClassWithEagerTestPanel extends JPanel {
     private JPanel listOfMethodsPanel;
 
     public ClassWithEagerTestPanel(EagerTestInfo eti){
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        this.setBorder(blackline);
+
         classNameLabel = new JLabel(eti.getTestClass().getName());
         pClassNameLabel = new JLabel(eti.getProductionClass().getName());
 
@@ -33,11 +37,11 @@ public class ClassWithEagerTestPanel extends JPanel {
                     cp.setLayout(new GridLayout(1+mb.getListOfMethodsCalled().size(), 1));
 
                     //Parte relativa alla creazione della scritta informativa
-                    String methodName = "Il metodo: "+mb.getMethod().getName()+" chiama i seguenti metodi: ";
-                    detailsFrame.getContentPane().add(new JLabel(methodName));
+                    String methodName = " Il metodo: "+mb.getMethod().getName()+" chiama i seguenti metodi: ";
+                    cp.add(new JLabel(methodName));
 
                     for(MethodBean mbCalled : mb.getListOfMethodsCalled()){
-                        JLabel methodCalledName = new JLabel(mbCalled.getName());
+                        JLabel methodCalledName = new JLabel("   "+mbCalled.getName());
                         cp.add(methodCalledName);
                     }
                     //Parte relativa alla creazione del frame

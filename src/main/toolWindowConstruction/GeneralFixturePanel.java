@@ -1,6 +1,5 @@
 package main.toolWindowConstruction;
 
-import com.intellij.ui.components.JBScrollPane;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
 import main.toolWindowConstruction.testSmellPanel.ClassWithGeneralFixturePanel;
 
@@ -25,8 +24,15 @@ public class GeneralFixturePanel extends JPanel{
             this.setBorder(border);
 
             JPanel topPanel = new JPanel(new GridLayout(1,2));
-            topPanel.add(new JLabel("NOME CLASSE"));
-            topPanel.add(new JLabel("DETTAGLI METODI"));
+
+            JLabel nomeClasse = new JLabel("NOME CLASSE");
+            nomeClasse.setHorizontalAlignment(SwingConstants.CENTER);
+            topPanel.add(nomeClasse);
+
+            JLabel dettagliMetodi = new JLabel("DETTAGLI METODI");
+            dettagliMetodi.setHorizontalAlignment(SwingConstants.CENTER);
+            topPanel.add(dettagliMetodi);
+
             this.add(topPanel);
 
             //Parte relativa alla creazione delle singole info per ogni classe affetta da GeneralFixture
