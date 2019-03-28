@@ -1,5 +1,6 @@
-package main.testSmellDetection;
+package main.testSmellDetection.detector;
 
+import com.intellij.openapi.project.Project;
 import it.unisa.testSmellDiffusion.beans.ClassBean;
 import it.unisa.testSmellDiffusion.beans.InstanceVariableBean;
 import it.unisa.testSmellDiffusion.beans.MethodBean;
@@ -8,20 +9,19 @@ import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.MethodWithEagerTest;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.MethodWithGeneralFixture;
+import main.testSmellDetection.IDetector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class Detector {
+public class StructuralDetector implements IDetector {
     private TestSmellDetector tsm;
-
-    private String projectFolderPath;
 
     /**
      * Costruttore usato per instanziare un detector usabile ovunque
      */
-    public Detector(){
+    public StructuralDetector(){
         tsm = new TestSmellDetector();
     }
 
@@ -29,9 +29,9 @@ public class Detector {
      * Costruttore usato per instanziare un detector usabile solo su un determinato progetto
      * @param pFolderPath path del progetto attivo
      */
-    public Detector(String pFolderPath){
+    public StructuralDetector(String pFolderPath){
         tsm = new TestSmellDetector(pFolderPath);
-        projectFolderPath = pFolderPath;
+        String projectFolderPath = pFolderPath;
     }
 
 
@@ -41,7 +41,7 @@ public class Detector {
     }
 
     public ArrayList<ClassBean> getAllTestClassesInTheProject(@NotNull String pFolderPath){
-        System.out.println("\nDETECTOR: sono il Detector, inizio a lavorare:\nEcco la path del progetto attivo: "+pFolderPath);
+        System.out.println("\nDETECTOR: sono il StructuralDetector, inizio a lavorare:\nEcco la path del progetto attivo: "+pFolderPath);
         ArrayList<ClassBean> myTestClasses = tsm.getAllTestClass(pFolderPath);
         System.out.println("\nEcco le classi trovate:");
         for (ClassBean cb : myTestClasses){
@@ -49,6 +49,7 @@ public class Detector {
         }
         return myTestClasses;
     }
+
 
     /**
      * Verifica la presenza di classi affette da GeneralFixture all'interno delle classi di test passate
@@ -120,4 +121,25 @@ public class Detector {
     }
 
 
+    //Metodi dell'interfaccia usati in virtù dello Strategy Desgin Pattern
+
+    /**
+     * Metodo per ottenere le informazioni riguardanti gli Smells GeneralFixture presenti in un dato progetto
+     * @param pFolderPath la folder del progetto da analizzare
+     * @return una lista delle informazioni sugli smells
+     */
+    @Override
+    public ArrayList<GeneralFixtureInfo> executeDetectionForGeneralFixture(@NotNull String pFolderPath) {
+        return executeDetectionForGeneralFixture(getAllTestClassesInTheProject(pFolderPath));
+    }
+
+    /**
+     * Metodo per ottenere le informazioni riguardanti gli Smells EagerTest presenti in un dato progetto
+     * @param pFolderPath la folder del progetto da analizzare
+     * @return una lista delle informazioni sugli smells
+     */
+    @Override
+    public ArrayList<EagerTestInfo> executeDetectionForEagerTest(@NotNull String pFolderPath) {
+        return executeDetectionForEagerTest(getAllTestClassesInTheProject(pFolderPath), getAllClassesInTheProject(pFolderPath));
+    }
 }

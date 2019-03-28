@@ -1,6 +1,5 @@
 package main.toolWindowConstruction;
 
-import com.intellij.ui.components.JBScrollPane;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import main.toolWindowConstruction.testSmellPanel.ClassWithEagerTestPanel;
 
@@ -24,10 +23,14 @@ public class EagerTestPanel extends JPanel {
             this.setLayout(new GridLayout(1+classesWithET.size(), 1));
             this.setBorder(border);
 
+            //Creazione della parte alta del JPanel
             JPanel topPanel = new JPanel(new GridLayout(1,3));
             topPanel.add(new JLabel("NOME CLASSE"));
             topPanel.add(new JLabel("NOME PRODUCTION CLASS"));
-            topPanel.add(new JLabel("DETTAGLI METODI"));
+            JLabel dettagli = new JLabel("DETTAGLI METODI");
+            dettagli.setHorizontalAlignment(SwingConstants.CENTER);
+            topPanel.add(dettagli);
+
             this.add(topPanel);
 
             //Parte relativa alla creazione delle singole info per ogni classe affetta da EagerTest

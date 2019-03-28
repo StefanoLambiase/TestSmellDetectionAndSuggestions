@@ -10,24 +10,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Questa classe rappresenta la GUI nella quale vengono mostrate le informazioni riguardanti una classe affetta da EagerTest
+ */
 public class ClassWithEagerTestPanel extends JPanel {
-    private JLabel classNameLabel;
-    private JLabel pClassNameLabel;
-    private JPanel listOfMethodsPanel;
 
     public ClassWithEagerTestPanel(EagerTestInfo eti){
+        //Setto il contorno del JPanel
         Border blackline = BorderFactory.createLineBorder(Color.black);
         this.setBorder(blackline);
 
-        classNameLabel = new JLabel(eti.getTestClass().getName());
-        pClassNameLabel = new JLabel(eti.getProductionClass().getName());
+        //Costruisco la struttura del JPanel riguardante una specifica classe affetta da EagerTest
+        JLabel classNameLabel = new JLabel("   "+eti.getTestClass().getBelongingPackage()+"."+eti.getTestClass().getName());
+        JLabel pClassNameLabel = new JLabel(eti.getProductionClass().getBelongingPackage()+"."+eti.getProductionClass().getName());
 
-        listOfMethodsPanel = new JPanel();
+        //parte riguardante i metodi
+        JPanel listOfMethodsPanel = new JPanel();
+        listOfMethodsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.BLACK));
         listOfMethodsPanel.setLayout(new GridLayout(eti.getMethodsThatCauseEagerTest().size(), 1));
 
         for(MethodWithEagerTest mb : eti.getMethodsThatCauseEagerTest()){
             JPanel methodPanel = new JPanel(new GridLayout(1, 2));
-            JLabel methodName = new JLabel(mb.getMethod().getName());
+            JLabel methodName = new JLabel("   "+mb.getMethod().getName());
             JButton methodButton = new JButton("details");
             methodButton.addActionListener(new ActionListener() {
                 @Override

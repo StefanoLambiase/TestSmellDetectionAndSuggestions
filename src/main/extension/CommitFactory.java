@@ -4,7 +4,7 @@ import it.unisa.testSmellDiffusion.beans.ClassBean;
 
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
-import main.testSmellDetection.Detector;
+import main.testSmellDetection.detector.StructuralDetector;
 import main.toolWindowConstruction.TestSmellWindowFactory;
 import com.intellij.openapi.vcs.CheckinProjectPanel;
 import com.intellij.openapi.vcs.changes.CommitContext;
@@ -48,7 +48,7 @@ public class CommitFactory  extends CheckinHandlerFactory{
                 */
 
                 //Questa parte riguarda l'analisi degli Smells
-                Detector tsd = new Detector();
+                StructuralDetector tsd = new StructuralDetector();
 
                 //Mi salvo la lista di classi e di classi di test del progetto attivo
                 Vector<ClassBean> myClasses = tsd.getAllClassesInTheProject(Objects.requireNonNull(myPanel.getProject().getBasePath()));

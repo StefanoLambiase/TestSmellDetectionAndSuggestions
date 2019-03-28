@@ -6,27 +6,31 @@ import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.MethodWithGenera
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Questa classe rappresenta la GUI nella quale vengono mostrate le informazioni riguardanti una classe affetta da GeneralFixture
+ */
 public class ClassWithGeneralFixturePanel extends JPanel {
-    private JLabel classNameLabel;
-    private JPanel listOfMethodsPanel;
 
     public ClassWithGeneralFixturePanel(GeneralFixtureInfo gfi){
+        //Setto il contorno del JPanel
         Border blackline = BorderFactory.createLineBorder(Color.black);
         this.setBorder(blackline);
 
         //Costruisco la struttura del JPanel riguardante una specifica classe affetta da GeneralFixture
-        classNameLabel = new JLabel(gfi.getTestClass().getName());
+        JLabel classNameLabel = new JLabel("   " + gfi.getTestClass().getBelongingPackage() + "." + gfi.getTestClass().getName());
 
-        listOfMethodsPanel = new JPanel();
+        //Parte riguardante i metodi affetti da GeneralFixture
+        JPanel listOfMethodsPanel = new JPanel();
+        listOfMethodsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.BLACK));
         listOfMethodsPanel.setLayout(new GridLayout(gfi.getMethodsThatCauseGeneralFixture().size(), 1));
+
         for(MethodWithGeneralFixture mb : gfi.getMethodsThatCauseGeneralFixture()){
             JPanel methodPanel = new JPanel(new GridLayout(1, 2));
-            JLabel methodName = new JLabel(mb.getMethod().getName());
+            JLabel methodName = new JLabel("   "+mb.getMethod().getName());
             JButton methodButton = new JButton("details");
             methodButton.addActionListener(new ActionListener() {
                 @Override
