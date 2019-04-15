@@ -4,7 +4,9 @@ import it.unisa.testSmellDiffusion.beans.ClassBean;
 
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import it.unisa.testSmellDiffusion.utility.TestSmellUtilities;
 import main.testSmellDetection.detector.StructuralDetector;
+import main.testSmellDetection.detector.TextualDetector;
 import main.toolWindowConstruction.TestSmellWindowFactory;
 import com.intellij.openapi.vcs.CheckinProjectPanel;
 import com.intellij.openapi.vcs.changes.CommitContext;
@@ -48,10 +50,10 @@ public class CommitFactory  extends CheckinHandlerFactory{
                 */
 
                 //Questa parte riguarda l'analisi degli Smells
-                StructuralDetector tsd = new StructuralDetector();
+                TextualDetector tsd = new TextualDetector();
 
                 //Mi salvo la lista di classi e di classi di test del progetto attivo
-                Vector<ClassBean> myClasses = tsd.getAllClassesInTheProject(Objects.requireNonNull(myPanel.getProject().getBasePath()));
+                Vector<ClassBean> myClasses = TestSmellUtilities.getAllClasses(Objects.requireNonNull(myPanel.getProject().getBasePath()));
                 ArrayList<ClassBean> myTestClasses = tsd.getAllTestClassesInTheProject(myPanel.getProject().getBasePath());
 
                 //Eseguo l'analisi
@@ -74,6 +76,7 @@ public class CommitFactory  extends CheckinHandlerFactory{
 
 
 
+    //METODI NON PIU' USATI
     /**
      * Questo metodo si occupa di trovare all'interno di tutte le classi nel commit quelle di test
      * @return un array contenente tutte le classe di test nel commit

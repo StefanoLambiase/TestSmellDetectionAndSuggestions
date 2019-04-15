@@ -38,16 +38,30 @@ public class ClassWithEagerTestPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     JFrame detailsFrame = new JFrame();
                     Container cp = detailsFrame.getContentPane();
-                    cp.setLayout(new GridLayout(1+mb.getListOfMethodsCalled().size(), 1));
+                    cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
 
                     //Parte relativa alla creazione della scritta informativa
-                    String methodName = " Il metodo: "+mb.getMethod().getName()+" chiama i seguenti metodi: ";
-                    cp.add(new JLabel(methodName));
+                    String methodName = " Method: "+mb.getMethod().getName()+" calls the following methods: ";
+                    JLabel methodNameLabel = new JLabel(methodName);
+                    methodNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    cp.add(methodNameLabel);
 
                     for(MethodBean mbCalled : mb.getListOfMethodsCalled()){
                         JLabel methodCalledName = new JLabel("   "+mbCalled.getName());
+                        methodCalledName.setAlignmentX(Component.LEFT_ALIGNMENT);
                         cp.add(methodCalledName);
                     }
+
+                    //Parte relativa alla refactoring tips
+                    JLabel refactoringLabel = new JLabel("It can be removed using this refactoring operations:");
+                    JLabel firstRefactoringLabel = new JLabel("Extract method: affected method can be splitted into smaller methods, each one testing a specific behavior of the tested object.");
+
+                    refactoringLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    firstRefactoringLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+                    cp.add(refactoringLabel);
+                    cp.add(firstRefactoringLabel);
+
                     //Parte relativa alla creazione del frame
                     detailsFrame.setSize(500,300);
                     detailsFrame.setVisible(true);

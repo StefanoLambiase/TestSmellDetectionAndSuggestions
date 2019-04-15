@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import it.unisa.testSmellDiffusion.testSmellInfo.lackOfCohesion.LackOfCohesionInfo;
 import main.testSmellDetection.IDetector;
 import main.testSmellDetection.detector.StructuralDetector;
 import main.toolWindowConstruction.TestSmellWindowFactory;
@@ -23,6 +24,7 @@ public class StructuralDetectionAction extends AnAction {
         //Eseguo l'analisi
         ArrayList<GeneralFixtureInfo> listGFI = detector.executeDetectionForGeneralFixture(anActionEvent.getProject().getBasePath());
         ArrayList<EagerTestInfo> listETI = detector.executeDetectionForEagerTest(anActionEvent.getProject().getBasePath());
+        ArrayList<LackOfCohesionInfo> listLOCI = detector.executeDetectionForLackOfCohesion(anActionEvent.getProject().getBasePath());
 
         //Creo la ToolWindow
         if(listGFI.isEmpty() && listETI.isEmpty()){

@@ -37,16 +37,38 @@ public class ClassWithGeneralFixturePanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     JFrame detailsFrame = new JFrame();
                     Container cp = detailsFrame.getContentPane();
-                    cp.setLayout(new GridLayout(1+mb.getListOfInstances().size(), 1));
+                    cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
+
+                    int windowWidth = detailsFrame.getWidth();
+                    int windowHeight = detailsFrame.getHeight();
 
                     //Parte relativa alla creazione della scritta informativa
-                    String methodName = " Il metodo: "+mb.getMethod().getName()+" non usa le seguenti variabili: ";
-                    cp.add(new JLabel(methodName));
+                    String methodName = " Method: "+mb.getMethod().getName()+" doesn't use the following variables:";
+                    JLabel methodNameLabel = new JLabel(methodName);
+                    methodNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    methodNameLabel.setMinimumSize(new Dimension(500, 125));
+                    methodNameLabel.setPreferredSize(new Dimension(500, 125));
+                    methodNameLabel.setMaximumSize(new Dimension(500, 125));
+                    cp.add(methodNameLabel);
 
                     for(InstanceVariableBean instance : mb.getListOfInstances()){
                         JLabel instanceCalledName = new JLabel("   "+instance.getName());
+                        instanceCalledName.setAlignmentX(Component.LEFT_ALIGNMENT);
                         cp.add(instanceCalledName);
                     }
+
+                    //Parte relativa alla refactoring tips
+                    JLabel refactoringLabel = new JLabel("The Smell can be removed using one of this refactoring operations:");
+                    JLabel firstRefactoringLabel = new JLabel("Extract method: setup method can be split into two different methods");
+                    JLabel secondRefactoringLabel = new JLabel("Extract class: the test class can be split into two separated classes");
+
+                    refactoringLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    firstRefactoringLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    secondRefactoringLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+                    cp.add(refactoringLabel);
+                    cp.add(firstRefactoringLabel);
+                    cp.add(secondRefactoringLabel);
 
                     //Parte relativa alla creazione del frame
                     detailsFrame.setSize(500,300);

@@ -1,6 +1,7 @@
 package main.toolWindowConstruction;
 
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import javafx.stage.Screen;
 import main.toolWindowConstruction.testSmellPanel.ClassWithGeneralFixturePanel;
 
 import javax.swing.*;
@@ -12,33 +13,49 @@ public class GeneralFixturePanel extends JPanel{
     private ArrayList<GeneralFixtureInfo> classesWithGeneralFixture;
 
     public GeneralFixturePanel(ArrayList<GeneralFixtureInfo> classesWithGF){
-        if(classesWithGF != null){
+        TitledBorder border = new TitledBorder("GENERAL FIXTURE");
+        border.setTitleJustification(TitledBorder.CENTER);
+        border.setTitlePosition(TitledBorder.TOP);
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(border);
+
+        if(!classesWithGF.isEmpty()){
             //Parte relativa all'inizializzazione del Panel per GeneralFixture
             classesWithGeneralFixture = classesWithGF;
 
-            TitledBorder border = new TitledBorder("GENERAL FIXTURE");
-            border.setTitleJustification(TitledBorder.CENTER);
-            border.setTitlePosition(TitledBorder.TOP);
+            //Parte relativa alla creazione del TopPanel
+            JPanel topPanel = new JPanel();
+            topPanel.setLayout(new GridLayout(1,2));
 
-            this.setLayout(new GridLayout(1+classesWithGF.size(), 1));
-            this.setBorder(border);
-
-            JPanel topPanel = new JPanel(new GridLayout(1,2));
-
-            JLabel nomeClasse = new JLabel("NOME CLASSE");
+            JLabel nomeClasse = new JLabel("CLASS NAME");
             nomeClasse.setHorizontalAlignment(SwingConstants.CENTER);
             topPanel.add(nomeClasse);
 
-            JLabel dettagliMetodi = new JLabel("DETTAGLI METODI");
+            JLabel dettagliMetodi = new JLabel("DETAILS");
             dettagliMetodi.setHorizontalAlignment(SwingConstants.CENTER);
             topPanel.add(dettagliMetodi);
 
+            //Mi prendo le dimensioni dello schermo
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            int width = gd.getDisplayMode().getWidth();
+            int height = gd.getDisplayMode().getHeight();
+
+            topPanel.setMinimumSize(new Dimension(width-70,40));
+            topPanel.setPreferredSize(new Dimension(width-70, 40));
+            topPanel.setMaximumSize(new Dimension(width-70, 40));
             this.add(topPanel);
 
             //Parte relativa alla creazione delle singole info per ogni classe affetta da GeneralFixture
             for(GeneralFixtureInfo gfi : classesWithGeneralFixture){
-                this.add(new ClassWithGeneralFixturePanel(gfi));
+                JPanel classPanel = new ClassWithGeneralFixturePanel(gfi);
+                this.add(classPanel);
             }
+        } else {
+            JPanel emptyPanel = new JPanel(new GridLayout(1,1));
+            JLabel emptyLabel = new JLabel("Nessuno Smell Trovato!");
+            emptyPanel.add(emptyLabel);
+            this.add(emptyPanel);
         }
     }
 
