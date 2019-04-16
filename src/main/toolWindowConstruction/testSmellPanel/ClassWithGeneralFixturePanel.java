@@ -46,14 +46,19 @@ public class ClassWithGeneralFixturePanel extends JPanel {
                     String methodName = " Method: "+mb.getMethod().getName()+" doesn't use the following variables:";
                     JLabel methodNameLabel = new JLabel(methodName);
                     methodNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    methodNameLabel.setMinimumSize(new Dimension(500, 125));
-                    methodNameLabel.setPreferredSize(new Dimension(500, 125));
-                    methodNameLabel.setMaximumSize(new Dimension(500, 125));
+                    methodNameLabel.setMinimumSize(new Dimension(500, 35));
+                    methodNameLabel.setPreferredSize(new Dimension(500, 35));
+                    methodNameLabel.setMaximumSize(new Dimension(500, 35));
                     cp.add(methodNameLabel);
 
                     for(InstanceVariableBean instance : mb.getListOfInstances()){
                         JLabel instanceCalledName = new JLabel("   "+instance.getName());
+
                         instanceCalledName.setAlignmentX(Component.LEFT_ALIGNMENT);
+                        instanceCalledName.setMinimumSize(new Dimension(500, 35));
+                        instanceCalledName.setPreferredSize(new Dimension(500, 35));
+                        instanceCalledName.setMaximumSize(new Dimension(500, 35));
+
                         cp.add(instanceCalledName);
                     }
 
