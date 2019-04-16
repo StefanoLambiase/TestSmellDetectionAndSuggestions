@@ -35,7 +35,7 @@ public class TextualDetectionAction extends AnAction {
             if(listGFI.isEmpty() && listETI.isEmpty()){
                 System.out.println("\nNon si è trovato alcuno Smell");
             } else {
-                new TestSmellWindowFactory().registerToolWindow(anActionEvent.getProject(), listGFI, listETI, listLOCI);
+                new TestSmellWindowFactory().registerToolWindow(true, false, anActionEvent.getProject(), listGFI, listETI, listLOCI);
             }
         } else {
             System.out.println("\nVi è stato un errore con l'ottenumento della folder del progetto attivo");

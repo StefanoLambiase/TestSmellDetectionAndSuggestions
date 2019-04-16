@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="TestSmellDetector10">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../TestSmellDetector10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

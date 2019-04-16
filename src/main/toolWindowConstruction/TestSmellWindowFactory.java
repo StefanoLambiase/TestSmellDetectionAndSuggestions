@@ -19,10 +19,6 @@ public class TestSmellWindowFactory {
     private JPanel eagerTestPanel;
     private JPanel lackOfCohesionPanel;
 
-    private ArrayList<GeneralFixtureInfo> classesWithGeneralFixture;
-    private ArrayList<EagerTestInfo> classesWithEagerTest;
-    private ArrayList<LackOfCohesionInfo> classesWithLackOfCohesion;
-
 
     public TestSmellWindowFactory(){
 
@@ -30,32 +26,52 @@ public class TestSmellWindowFactory {
 
 
     /**
-     * Questo metodo si occupa di registrare e mostrare la ToolWindow
+     * Qeusto metodo si occupa di decidere quale tool window registrare sulla base del tipo di analisi
+     * @param textual indica che l'analisi è testuale
+     * @param structural indica che l'analisi è strutturale
      * @param project il progetto attivo
-     * @param listGFI lista di info su GeneralFixture
-     * @param listETI lista di info su EagerTest
+     * @param listGFI la lista di info su GeneralFixture
+     * @param listETI la lista di info su EagerTest
+     * @param listLOCI la lista di info su LackOfCohesion
      */
-    public void registerToolWindow(Project project, ArrayList<GeneralFixtureInfo> listGFI, ArrayList<EagerTestInfo> listETI, ArrayList<LackOfCohesionInfo> listLOCI) {
+    public void registerToolWindow(Boolean textual, Boolean structural,
+                                   Project project,
+                                   ArrayList<GeneralFixtureInfo> listGFI,
+                                   ArrayList<EagerTestInfo> listETI,
+                                   ArrayList<LackOfCohesionInfo> listLOCI){
         System.out.println("\nTOOL WINDOW: Inizio del processo per registrare la ToolWindow: TestWindow\n");
+
+        //Verifico che tipo di toolWindow devo creare
+        if(textual){
+            createToolWindow("Textual Test Window", project, listGFI, listETI, listLOCI);
+        }
+        if(structural){
+            createToolWindow("Structural Test Window", project, listGFI, listETI, listLOCI);
+        }
+    }
+
+
+    private void createToolWindow(String idWindow,
+                                 Project project,
+                                 ArrayList<GeneralFixtureInfo> listGFI,
+                                 ArrayList<EagerTestInfo> listETI,
+                                 ArrayList<LackOfCohesionInfo> listLOCI) {
         //Creo la ToolWindow
         ToolWindowManager twm = ToolWindowManager.getInstance(project);
         System.out.println("Ho preso il ToolWindowManager");
 
         //Questa parte serve a cancellare una eventuale ToolWindow precedentemente presente
-        ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("TestWindow");
+        ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(idWindow);
         if (toolWindow != null) {
-            twm.unregisterToolWindow("TestWindow");
+            twm.unregisterToolWindow(idWindow);
             System.out.println("Ho dovuto disattivare una precedente istanza della ToolWindow");
         }
 
-        ToolWindow testWindow = twm.registerToolWindow("TestWindow", false, ToolWindowAnchor.BOTTOM);
-        testWindow.setTitle("TestWindow");
+        ToolWindow testWindow = twm.registerToolWindow(idWindow, false, ToolWindowAnchor.BOTTOM, true);
+        testWindow.setTitle(idWindow);
         System.out.println("Ho registrato la ToolWindow");
 
         //Inizio ad occuparmi della formattazione della ToolWindow
-        classesWithGeneralFixture = listGFI;
-        classesWithEagerTest = listETI;
-        classesWithLackOfCohesion = listLOCI;
 
         if (listGFI != null) {
             generalFixturePanel = new GeneralFixturePanel(listGFI);
@@ -69,36 +85,28 @@ public class TestSmellWindowFactory {
 
         //Questo metodo si occupa di creare la formattazione interna della ToolWindow e anche di aggiungervela
         if(listETI != null || listGFI != null || listLOCI != null){
-            createToolWindow(testWindow);
+            ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+
+            //In questa parte costruisco i Content da mettere nella ToolWindow
+            if(listGFI != null){
+                JBScrollPane scroll = new JBScrollPane(generalFixturePanel);
+                Content contentGeneralFixture = contentFactory.createContent(scroll, "GeneralFixture", true);
+                testWindow.getContentManager().addContent(contentGeneralFixture);
+            }
+            if (listETI != null){
+                JBScrollPane scroll = new JBScrollPane(eagerTestPanel);
+                Content contentEagerTest = contentFactory.createContent(scroll, "EagerTest", true);
+                testWindow.getContentManager().addContent(contentEagerTest);
+            }
+            if (listLOCI != null){
+                JBScrollPane scroll = new JBScrollPane(lackOfCohesionPanel);
+                Content contentLackOfCohesion = contentFactory.createContent(scroll, "LackOfCohesion", true);
+                testWindow.getContentManager().addContent(contentLackOfCohesion);
+            }
             testWindow.show(null);
         }
 
         System.out.println("Ho completato le operazioni riguardanti la ToolWindow");
-    }
-
-    /**
-     * Questo metodo crea il contenuto della ToolWindow
-     * @param tw la ToolWindow in cui inserire il contenuto
-     */
-    private void createToolWindow(ToolWindow tw){
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-
-        //In questa parte costruisco i Content da mettere nella ToolWindow
-        if(classesWithGeneralFixture != null){
-            JBScrollPane scroll = new JBScrollPane(generalFixturePanel);
-            Content contentGeneralFixture = contentFactory.createContent(scroll, "GeneralFixture", true);
-            tw.getContentManager().addContent(contentGeneralFixture);
-        }
-        if (classesWithEagerTest != null){
-            JBScrollPane scroll = new JBScrollPane(eagerTestPanel);
-            Content contentEagerTest = contentFactory.createContent(scroll, "EagerTest", true);
-            tw.getContentManager().addContent(contentEagerTest);
-        }
-        if (classesWithLackOfCohesion != null){
-            JBScrollPane scroll = new JBScrollPane(lackOfCohesionPanel);
-            Content contentLackOfCohesion = contentFactory.createContent(scroll, "LackOfCohesion", true);
-            tw.getContentManager().addContent(contentLackOfCohesion);
-        }
     }
 
 

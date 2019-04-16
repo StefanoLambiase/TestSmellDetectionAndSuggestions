@@ -6,6 +6,7 @@ import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.lackOfCohesion.LackOfCohesionInfo;
 import it.unisa.testSmellDiffusion.utility.TestSmellUtilities;
+import main.testSmellDetection.IDetector;
 import main.testSmellDetection.detector.StructuralDetector;
 import main.testSmellDetection.detector.TextualDetector;
 import main.toolWindowConstruction.TestSmellWindowFactory;
@@ -16,8 +17,6 @@ import com.intellij.openapi.vcs.checkin.CheckinHandlerFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Vector;
 
 
 public class CommitFactory  extends CheckinHandlerFactory{
@@ -37,38 +36,39 @@ public class CommitFactory  extends CheckinHandlerFactory{
                 //Stampa di inizio
                 System.out.println("\n\nHello! Inizio la fase pre-commit");
 
-                /*
-                //In questa parte mi prendo le classi di test per lavorarci in seguito
-                ArrayList<VirtualFile> testClasses = getTestClasses();
-
-                //Creazione programmatica della ToolWindow
-                if(testClasses.isEmpty()){
-                    System.out.println("\nNon si e' committata alcuna classe di test");
-                } else {
-                    createToolWindowWithFiles(testClasses);
-                    testWindow.show(null);
-                }
-                */
-
                 //Questa parte riguarda l'analisi degli Smells
-                TextualDetector tsd = new TextualDetector();
+                IDetector detector;
 
-                //Mi salvo la lista di classi e di classi di test del progetto attivo
-                Vector<ClassBean> myClasses = TestSmellUtilities.getAllClasses(Objects.requireNonNull(myPanel.getProject().getBasePath()));
-                ArrayList<ClassBean> myTestClasses = tsd.getAllTestClassesInTheProject(myPanel.getProject().getBasePath());
+                //Mi salvo la lista di classi di test del progetto attivo
+                ArrayList<ClassBean> myTestClasses = TestSmellUtilities.getAllTestClasses(myPanel.getProject().getBasePath());
 
-                //Eseguo l'analisi
-                ArrayList<GeneralFixtureInfo> listGFI = tsd.executeDetectionForGeneralFixture(myTestClasses);
-                ArrayList<EagerTestInfo> listETI = tsd.executeDetectionForEagerTest(myTestClasses, myClasses);
-                ArrayList<LackOfCohesionInfo> listLOCI = tsd.executeDetectionForLackOfCohesion(myPanel.getProject().getBasePath());
+                //Eseguo l'analisi Testuale
+                detector = new TextualDetector();
+
+                ArrayList<GeneralFixtureInfo> listGFI = detector.executeDetectionForGeneralFixture(myPanel.getProject().getBasePath());
+                ArrayList<EagerTestInfo> listETI = detector.executeDetectionForEagerTest(myPanel.getProject().getBasePath());
+                ArrayList<LackOfCohesionInfo> listLOCI = detector.executeDetectionForLackOfCohesion(myPanel.getProject().getBasePath());
 
                 //Creo la ToolWindow
                 if(myTestClasses.isEmpty()){
                     System.out.println("\nNon si e' committata alcuna classe di test");
                 } else {
-                    new TestSmellWindowFactory().registerToolWindow(myPanel.getProject(), listGFI, listETI, listLOCI);
+                    new TestSmellWindowFactory().registerToolWindow(true, false, myPanel.getProject(), listGFI, listETI, listLOCI);
                 }
 
+                //Eseguo l'analisi Strutturale
+                detector = new StructuralDetector();
+
+                listGFI = detector.executeDetectionForGeneralFixture(myPanel.getProject().getBasePath());
+                listETI = detector.executeDetectionForEagerTest(myPanel.getProject().getBasePath());
+                listLOCI = detector.executeDetectionForLackOfCohesion(myPanel.getProject().getBasePath());
+
+                //Creo la ToolWindow
+                if(myTestClasses.isEmpty()){
+                    System.out.println("\nNon si e' committata alcuna classe di test");
+                } else {
+                    new TestSmellWindowFactory().registerToolWindow(false, true, myPanel.getProject(), listGFI, listETI, listLOCI);
+                }
                 //Chiamata finale per completare il commit
                 return super.beforeCheckin();
             }
