@@ -9,6 +9,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import it.unisa.testSmellDiffusion.testSmellInfo.lackOfCohesion.LackOfCohesionInfo;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -16,9 +17,11 @@ import java.util.ArrayList;
 public class TestSmellWindowFactory {
     private JPanel generalFixturePanel;
     private JPanel eagerTestPanel;
+    private JPanel lackOfCohesionPanel;
 
     private ArrayList<GeneralFixtureInfo> classesWithGeneralFixture;
     private ArrayList<EagerTestInfo> classesWithEagerTest;
+    private ArrayList<LackOfCohesionInfo> classesWithLackOfCohesion;
 
 
     public TestSmellWindowFactory(){
@@ -32,7 +35,7 @@ public class TestSmellWindowFactory {
      * @param listGFI lista di info su GeneralFixture
      * @param listETI lista di info su EagerTest
      */
-    public void registerToolWindow(Project project, ArrayList<GeneralFixtureInfo> listGFI, ArrayList<EagerTestInfo> listETI) {
+    public void registerToolWindow(Project project, ArrayList<GeneralFixtureInfo> listGFI, ArrayList<EagerTestInfo> listETI, ArrayList<LackOfCohesionInfo> listLOCI) {
         System.out.println("\nTOOL WINDOW: Inizio del processo per registrare la ToolWindow: TestWindow\n");
         //Creo la ToolWindow
         ToolWindowManager twm = ToolWindowManager.getInstance(project);
@@ -52,6 +55,7 @@ public class TestSmellWindowFactory {
         //Inizio ad occuparmi della formattazione della ToolWindow
         classesWithGeneralFixture = listGFI;
         classesWithEagerTest = listETI;
+        classesWithLackOfCohesion = listLOCI;
 
         if (listGFI != null) {
             generalFixturePanel = new GeneralFixturePanel(listGFI);
@@ -59,8 +63,12 @@ public class TestSmellWindowFactory {
         if (listETI != null) {
             eagerTestPanel = new EagerTestPanel(listETI);
         }
+        if (listLOCI != null){
+            lackOfCohesionPanel = new LackOfCohesionPanel(listLOCI);
+        }
+
         //Questo metodo si occupa di creare la formattazione interna della ToolWindow e anche di aggiungervela
-        if(listETI != null || listGFI != null){
+        if(listETI != null || listGFI != null || listLOCI != null){
             createToolWindow(testWindow);
             testWindow.show(null);
         }
@@ -85,6 +93,11 @@ public class TestSmellWindowFactory {
             JBScrollPane scroll = new JBScrollPane(eagerTestPanel);
             Content contentEagerTest = contentFactory.createContent(scroll, "EagerTest", true);
             tw.getContentManager().addContent(contentEagerTest);
+        }
+        if (classesWithLackOfCohesion != null){
+            JBScrollPane scroll = new JBScrollPane(lackOfCohesionPanel);
+            Content contentLackOfCohesion = contentFactory.createContent(scroll, "LackOfCohesion", true);
+            tw.getContentManager().addContent(contentLackOfCohesion);
         }
     }
 

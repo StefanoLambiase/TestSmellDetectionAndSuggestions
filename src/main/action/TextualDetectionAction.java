@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import it.unisa.testSmellDiffusion.testSmellInfo.lackOfCohesion.LackOfCohesionInfo;
 import main.testSmellDetection.IDetector;
 import main.testSmellDetection.detector.StructuralDetector;
 import main.testSmellDetection.detector.TextualDetector;
@@ -28,12 +29,13 @@ public class TextualDetectionAction extends AnAction {
         if(pFolderPath != null){
             ArrayList<GeneralFixtureInfo> listGFI = detector.executeDetectionForGeneralFixture(pFolderPath);
             ArrayList<EagerTestInfo> listETI = detector.executeDetectionForEagerTest(pFolderPath);
+            ArrayList<LackOfCohesionInfo> listLOCI = detector.executeDetectionForLackOfCohesion(pFolderPath);
 
             //Creo la ToolWindow
             if(listGFI.isEmpty() && listETI.isEmpty()){
                 System.out.println("\nNon si è trovato alcuno Smell");
             } else {
-                new TestSmellWindowFactory().registerToolWindow(anActionEvent.getProject(), listGFI, listETI);
+                new TestSmellWindowFactory().registerToolWindow(anActionEvent.getProject(), listGFI, listETI, listLOCI);
             }
         } else {
             System.out.println("\nVi è stato un errore con l'ottenumento della folder del progetto attivo");

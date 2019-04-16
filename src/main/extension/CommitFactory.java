@@ -4,6 +4,7 @@ import it.unisa.testSmellDiffusion.beans.ClassBean;
 
 import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.EagerTestInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
+import it.unisa.testSmellDiffusion.testSmellInfo.lackOfCohesion.LackOfCohesionInfo;
 import it.unisa.testSmellDiffusion.utility.TestSmellUtilities;
 import main.testSmellDetection.detector.StructuralDetector;
 import main.testSmellDetection.detector.TextualDetector;
@@ -59,12 +60,13 @@ public class CommitFactory  extends CheckinHandlerFactory{
                 //Eseguo l'analisi
                 ArrayList<GeneralFixtureInfo> listGFI = tsd.executeDetectionForGeneralFixture(myTestClasses);
                 ArrayList<EagerTestInfo> listETI = tsd.executeDetectionForEagerTest(myTestClasses, myClasses);
+                ArrayList<LackOfCohesionInfo> listLOCI = tsd.executeDetectionForLackOfCohesion(myPanel.getProject().getBasePath());
 
                 //Creo la ToolWindow
                 if(myTestClasses.isEmpty()){
                     System.out.println("\nNon si e' committata alcuna classe di test");
                 } else {
-                    new TestSmellWindowFactory().registerToolWindow(myPanel.getProject(), listGFI, listETI);
+                    new TestSmellWindowFactory().registerToolWindow(myPanel.getProject(), listGFI, listETI, listLOCI);
                 }
 
                 //Chiamata finale per completare il commit

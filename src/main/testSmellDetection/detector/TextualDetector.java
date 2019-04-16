@@ -139,7 +139,7 @@ public class TextualDetector implements IDetector {
     public ArrayList<LackOfCohesionInfo> executeDetectionForLackOfCohesion(@NotNull String pFolderPath){
         //Parte relativa a LackOfCohesion
         System.out.println("\nDETECTOR: inizio a cercare per LackOfCohesion: ");
-        ArrayList<LackOfCohesionInfo> classesWithLackOfCohesion = tsm.checkLackOfCohesion(getAllTestClassesInTheProject(pFolderPath));
+        ArrayList<LackOfCohesionInfo> classesWithLackOfCohesion = tsm.checkLackOfCohesion(getAllTestClassesInTheProject(pFolderPath), pFolderPath);
 
         return classesWithLackOfCohesion;
     }

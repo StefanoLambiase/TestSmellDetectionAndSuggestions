@@ -30,7 +30,7 @@ public class StructuralDetectionAction extends AnAction {
         if(listGFI.isEmpty() && listETI.isEmpty()){
             System.out.println("\nNon si è trovato alcuno Smell");
         } else {
-            new TestSmellWindowFactory().registerToolWindow(anActionEvent.getProject(), listGFI, listETI);
+            new TestSmellWindowFactory().registerToolWindow(anActionEvent.getProject(), listGFI, listETI, listLOCI);
         }
     }
 
