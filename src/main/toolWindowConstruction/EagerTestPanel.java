@@ -28,9 +28,9 @@ public class EagerTestPanel extends JPanel {
             JPanel topPanel = new JPanel(new GridLayout(1,3));
             topPanel.add(new JLabel("CLASS NAME"));
             topPanel.add(new JLabel("PRODUCTION CLASS NAME"));
-            JLabel dettagli = new JLabel("DETAILS");
-            dettagli.setHorizontalAlignment(SwingConstants.CENTER);
-            topPanel.add(dettagli);
+            JLabel dettagliLabel = new JLabel("METHODS DETAILS");
+            dettagliLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            topPanel.add(dettagliLabel);
 
             //Mi prendo le dimensioni dello schermo
             GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

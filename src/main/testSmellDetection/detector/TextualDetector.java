@@ -9,6 +9,7 @@ import it.unisa.testSmellDiffusion.testSmellInfo.eagerTest.MethodWithEagerTest;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.GeneralFixtureInfo;
 import it.unisa.testSmellDiffusion.testSmellInfo.generalFixture.MethodWithGeneralFixture;
 import it.unisa.testSmellDiffusion.testSmellInfo.lackOfCohesion.LackOfCohesionInfo;
+import it.unisa.testSmellDiffusion.testSmellRules.EagerTest;
 import it.unisa.testSmellDiffusion.utility.TestSmellUtilities;
 import main.testSmellDetection.IDetector;
 import org.jetbrains.annotations.NotNull;
@@ -82,28 +83,6 @@ public class TextualDetector implements IDetector {
         System.out.println("\nDETECTOR: inizio a cercare per EagerTest: ");
         ArrayList<EagerTestInfo> classesWithEagerTest = tsm.checkEagerTest(testClasses, allClassesInTheProject);
 
-        //Parte relativa alla stampa dei dati ottenuti
-        for(EagerTestInfo eti : classesWithEagerTest){
-            String className = "\nNOME CLASSE: "+eti.getTestClass().getName();
-            String productionClassName = "\nNOME PRODUCTION CLASS: "+eti.getProductionClass().getName();
-
-            for(MethodWithEagerTest method : eti.getMethodsThatCauseEagerTest()){
-                String methodName = "\nNome Metodo: "+method.getMethod().getName()+"\n   Lista metodi chiamati:";
-
-                for(MethodBean mb : method.getListOfMethodsCalled()){
-                    methodName = new StringBuilder()
-                            .append(methodName)
-                            .append("\n   "+mb.getName())
-                            .toString();
-                }
-                className = new StringBuilder()
-                        .append(className)
-                        .append(productionClassName)
-                        .append(methodName)
-                        .toString();
-            }
-            System.out.println(className);
-        }
         return classesWithEagerTest;
     }
 

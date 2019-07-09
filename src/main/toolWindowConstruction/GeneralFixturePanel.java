@@ -32,7 +32,7 @@ public class GeneralFixturePanel extends JPanel{
             nomeClasse.setHorizontalAlignment(SwingConstants.CENTER);
             topPanel.add(nomeClasse);
 
-            JLabel dettagliMetodi = new JLabel("DETAILS");
+            JLabel dettagliMetodi = new JLabel("METHODS DETAILS");
             dettagliMetodi.setHorizontalAlignment(SwingConstants.CENTER);
             topPanel.add(dettagliMetodi);
 

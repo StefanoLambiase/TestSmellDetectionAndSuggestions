@@ -36,7 +36,7 @@ public class ClassWithEagerTestPanel extends JPanel {
             methodButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFrame detailsFrame = new JFrame();
+                    JFrame detailsFrame = new JFrame(eti.getTestClass().getName());
                     Container cp = detailsFrame.getContentPane();
                     cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
 
@@ -44,11 +44,19 @@ public class ClassWithEagerTestPanel extends JPanel {
                     String methodName = " Method: "+mb.getMethod().getName()+" calls the following methods: ";
                     JLabel methodNameLabel = new JLabel(methodName);
                     methodNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    methodNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    methodNameLabel.setMinimumSize(new Dimension(500, 35));
+                    methodNameLabel.setPreferredSize(new Dimension(500, 35));
+                    methodNameLabel.setMaximumSize(new Dimension(500, 35));
                     cp.add(methodNameLabel);
 
                     for(MethodBean mbCalled : mb.getListOfMethodsCalled()){
                         JLabel methodCalledName = new JLabel("   "+mbCalled.getName());
                         methodCalledName.setAlignmentX(Component.LEFT_ALIGNMENT);
+                        methodCalledName.setMinimumSize(new Dimension(500, 35));
+                        methodCalledName.setPreferredSize(new Dimension(500, 35));
+                        methodCalledName.setMaximumSize(new Dimension(500, 35));
+
                         cp.add(methodCalledName);
                     }
 

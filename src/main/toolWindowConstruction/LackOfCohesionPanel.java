@@ -25,11 +25,12 @@ public class LackOfCohesionPanel extends JPanel {
             classesWithLackOfCohesion = classesWithLOC;
 
             //Creazione della parte alta del JPanel
-            JPanel topPanel = new JPanel(new GridLayout(1,2));
+            JPanel topPanel = new JPanel(new GridLayout(1,3));
             topPanel.add(new JLabel("CLASS NAME"));
-            JLabel dettagli = new JLabel("DETAILS");
-            dettagli.setHorizontalAlignment(SwingConstants.CENTER);
-            topPanel.add(dettagli);
+            topPanel.add(new JLabel("PRODUCTION CLASS NAME"));
+            JLabel dettagliLabel = new JLabel("DETAILS");
+            dettagliLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            topPanel.add(dettagliLabel);
 
             //Mi prendo le dimensioni dello schermo
             GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

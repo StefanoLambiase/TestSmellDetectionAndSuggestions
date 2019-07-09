@@ -35,7 +35,7 @@ public class ClassWithGeneralFixturePanel extends JPanel {
             methodButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFrame detailsFrame = new JFrame();
+                    JFrame detailsFrame = new JFrame(gfi.getTestClass().getName());
                     Container cp = detailsFrame.getContentPane();
                     cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
 
